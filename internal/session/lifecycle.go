@@ -142,11 +142,32 @@ func StartSession(t *tmux.Tmux, cfg SessionConfig) (*StartResult, error) {
 	// 1. Resolve runtime config.
 	runtimeConfig := config.ResolveRoleAgentConfig(cfg.Role, cfg.TownRoot, cfg.RigPath)
 
+	// Debug: Print resolved runtime config in human-readable form.
+	fmt.Printf("[session] Resolved runtime config for role=%s:\n", cfg.Role)
+	fmt.Printf("  provider=%s command=%s args=%v\n", runtimeConfig.Provider, runtimeConfig.Command, runtimeConfig.Args)
+	fmt.Printf("  prompt_mode=%s initial_prompt=%q\n", runtimeConfig.PromptMode, runtimeConfig.InitialPrompt)
+	if runtimeConfig.Session != nil {
+		fmt.Printf("  session: session_id_env=%s config_dir_env=%s\n", runtimeConfig.Session.SessionIDEnv, runtimeConfig.Session.ConfigDirEnv)
+	}
+	if runtimeConfig.Hooks != nil {
+		fmt.Printf("  hooks: provider=%s dir=%s settings_file=%s\n", runtimeConfig.Hooks.Provider, runtimeConfig.Hooks.Dir, runtimeConfig.Hooks.SettingsFile)
+	}
+	if runtimeConfig.Tmux != nil {
+		fmt.Printf("  tmux: process_names=%v ready_prefix=%q delay_ms=%d\n", runtimeConfig.Tmux.ProcessNames, runtimeConfig.Tmux.ReadyPromptPrefix, runtimeConfig.Tmux.ReadyDelayMs)
+	}
+	if runtimeConfig.Instructions != nil {
+		fmt.Printf("  instructions: file=%s\n", runtimeConfig.Instructions.File)
+	}
+	if len(runtimeConfig.Env) > 0 {
+		fmt.Printf("  env: %v\n", runtimeConfig.Env)
+	}
+
 	// 2. Ensure settings/plugins exist for the agent.
 	settingsDir := config.RoleSettingsDir(cfg.Role, cfg.RigPath)
 	if settingsDir == "" {
 		settingsDir = cfg.WorkDir
 	}
+	fmt.Printf("[session] settings_dir=%s\n", settingsDir)
 	if err := runtime.EnsureSettingsForRole(settingsDir, cfg.WorkDir, cfg.Role, runtimeConfig); err != nil {
 		return nil, fmt.Errorf("ensuring runtime settings: %w", err)
 	}
@@ -161,6 +182,7 @@ func StartSession(t *tmux.Tmux, cfg SessionConfig) (*StartResult, error) {
 			return nil, fmt.Errorf("building startup command: %w", err)
 		}
 	}
+	fmt.Printf("[session] startup_command=%s\n", command)
 
 	// Prepend runtime config dir env if needed.
 	if runtimeConfig.Session != nil && runtimeConfig.Session.ConfigDirEnv != "" && cfg.RuntimeConfigDir != "" {
@@ -192,6 +214,7 @@ func StartSession(t *tmux.Tmux, cfg SessionConfig) (*StartResult, error) {
 		TownRoot:         cfg.TownRoot,
 		RuntimeConfigDir: cfg.RuntimeConfigDir,
 	})
+	fmt.Printf("[session] env_vars=%v\n", envVars)
 	for k, v := range envVars {
 		_ = t.SetEnvironment(cfg.SessionID, k, v)
 	}
