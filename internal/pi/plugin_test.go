@@ -1,6 +1,7 @@
 package pi
 
 import (
+	"bytes"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -10,21 +11,21 @@ import (
 func TestEnsurePiPluginAt_EmptyParameters(t *testing.T) {
 	// Test that empty pluginDir or pluginFile returns nil
 	t.Run("empty pluginDir", func(t *testing.T) {
-		err := pi.EnsurePiPluginAt("/tmp/work", "", "gastown.ts")
+		err := EnsurePiPluginAt("/tmp/work", "", "gastown.ts")
 		if err != nil {
 			t.Errorf("EnsurePiPluginAt() with empty pluginDir should return nil, got %v", err)
 		}
 	})
 
 	t.Run("empty pluginFile", func(t *testing.T) {
-		err := pi.EnsurePiPluginAt("/tmp/work", "plugins", "")
+		err := EnsurePiPluginAt("/tmp/work", "plugins", "")
 		if err != nil {
 			t.Errorf("EnsurePiPluginAt() with empty pluginFile should return nil, got %v", err)
 		}
 	})
 
 	t.Run("both empty", func(t *testing.T) {
-		err := pi.EnsurePiPluginAt("/tmp/work", "", "")
+		err := EnsurePiPluginAt("/tmp/work", "", "")
 		if err != nil {
 			t.Errorf("EnsurePiPluginAt() with both empty should return nil, got %v", err)
 		}
@@ -51,7 +52,7 @@ func TestEnsurePiPluginAt_FileExists(t *testing.T) {
 	}
 
 	// EnsurePiPluginAt should not overwrite existing file
-	err := pi.EnsurePiPluginAt(tmpDir, pluginDir, pluginFile)
+	err := EnsurePiPluginAt(tmpDir, pluginDir, pluginFile)
 	if err != nil {
 		t.Fatalf("EnsurePiPluginAt() error = %v", err)
 	}
@@ -80,7 +81,7 @@ func TestEnsurePiPluginAt_CreatesFile(t *testing.T) {
 	}
 
 	// Create the plugin
-	err := pi.EnsurePiPluginAt(tmpDir, pluginDir, pluginFile)
+	err := EnsurePiPluginAt(tmpDir, pluginDir, pluginFile)
 	if err != nil {
 		t.Fatalf("EnsurePiPluginAt() error = %v", err)
 	}
@@ -104,7 +105,7 @@ func TestEnsurePiPluginAt_CreatesFile(t *testing.T) {
 	}
 
 	// Verify it's the correct TypeScript plugin content
-	if !contains(content, "ExtensionAPI") {
+	if !bytes.Contains(content, []byte("ExtensionAPI")) {
 		t.Error("Plugin file should contain TypeScript ExtensionAPI")
 	}
 }
@@ -118,7 +119,7 @@ func TestEnsurePiPluginAt_CreatesDirectory(t *testing.T) {
 	pluginPath := filepath.Join(tmpDir, pluginDir, pluginFile)
 
 	// Create the plugin
-	err := pi.EnsurePiPluginAt(tmpDir, pluginDir, pluginFile)
+	err := EnsurePiPluginAt(tmpDir, pluginDir, pluginFile)
 	if err != nil {
 		t.Fatalf("EnsurePiPluginAt() error = %v", err)
 	}
@@ -145,7 +146,7 @@ func TestEnsurePiPluginAt_FilePermissions(t *testing.T) {
 	pluginFile := "gastown.ts"
 	pluginPath := filepath.Join(tmpDir, pluginDir, pluginFile)
 
-	err := pi.EnsurePiPluginAt(tmpDir, pluginDir, pluginFile)
+	err := EnsurePiPluginAt(tmpDir, pluginDir, pluginFile)
 	if err != nil {
 		t.Fatalf("EnsurePiPluginAt() error = %v", err)
 	}
@@ -160,9 +161,4 @@ func TestEnsurePiPluginAt_FilePermissions(t *testing.T) {
 	if info.Mode() != expectedMode {
 		t.Errorf("Plugin file mode = %v, want %v", info.Mode(), expectedMode)
 	}
-}
-
-// contains checks if b contains s as a substring
-func contains(b []byte, s string) bool {
-	return len(b) > 0 && len(s) > 0 && string(b) != "" && len(s) <= len(b) && (string(b) == s || len(s) < len(b) && (string(b[:len(s)]) == s || contains(b[1:], s)))
 }
