@@ -673,6 +673,7 @@ func defaultConfigDirEnv(provider string) string {
 }
 
 func defaultHooksProvider(provider string) string {
+	// TODO(norman): Add case for pi, if needed
 	switch provider {
 	case "claude":
 		return "claude"
@@ -684,6 +685,7 @@ func defaultHooksProvider(provider string) string {
 }
 
 func defaultHooksDir(provider string) string {
+	// TODO(norman): Add case for pi, if needed
 	switch provider {
 	case "claude":
 		return ".claude"
@@ -695,6 +697,7 @@ func defaultHooksDir(provider string) string {
 }
 
 func defaultHooksFile(provider string) string {
+	// TODO(norman): Add case for pi, if needed
 	switch provider {
 	case "claude":
 		// Use settings.json installed via --settings flag in a gastown-managed
@@ -743,6 +746,7 @@ func defaultReadyDelayMs(provider string) int {
 		// 8000ms provides reliable startup detection across models.
 		return 8000
 	}
+	// TODO(norman): Add case for pi, if needed
 	return 0
 }
 
@@ -751,6 +755,9 @@ func defaultInstructionsFile(provider string) string {
 		return "AGENTS.md"
 	}
 	if provider == "opencode" {
+		return "AGENTS.md"
+	}
+	if provider == "pi" {
 		return "AGENTS.md"
 	}
 	return "CLAUDE.md"
