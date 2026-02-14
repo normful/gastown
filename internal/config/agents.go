@@ -29,12 +29,14 @@ const (
 	AgentAmp AgentPreset = "amp"
 	// AgentOpenCode is OpenCode multi-model CLI.
 	AgentOpenCode AgentPreset = "opencode"
+	// AgentPi is pi-mono CLI.
+	AgentPi AgentPreset = "pi"
 )
 
 // AgentPresetInfo contains the configuration details for an agent preset.
 // This extends the basic RuntimeConfig with agent-specific metadata.
 type AgentPresetInfo struct {
-	// Name is the preset identifier (e.g., "claude", "gemini", "codex", "cursor", "auggie", "amp").
+	// Name is the preset identifier (e.g., "claude", "gemini", "codex", "cursor", "auggie", "amp", "opencode", "pi").
 	Name AgentPreset `json:"name"`
 
 	// Command is the CLI binary to invoke.
@@ -201,6 +203,21 @@ var builtinPresets = map[AgentPreset]*AgentPresetInfo{
 		NonInteractive: &NonInteractiveConfig{
 			Subcommand: "run",
 			OutputFlag: "--format json",
+		},
+	},
+	AgentPi: {
+		Name:                AgentPi,
+		Command:             "pi",
+		Args:                []string{},
+		ProcessNames:        []string{"pi"},
+		SessionIDEnv:        "",
+		ResumeFlag:          "--session",
+		ResumeStyle:         "flag",
+		SupportsHooks:       true, // Uses .pi/extensions/gastown.ts
+		SupportsForkSession: false,
+		NonInteractive: &NonInteractiveConfig{
+			PromptFlag: "--print",
+			OutputFlag: "--mode json",
 		},
 	},
 }

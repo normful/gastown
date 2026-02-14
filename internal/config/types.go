@@ -678,6 +678,8 @@ func defaultHooksProvider(provider string) string {
 		return "claude"
 	case "opencode":
 		return "opencode"
+	case "pi":
+		return "pi"
 	default:
 		return "none"
 	}
@@ -689,6 +691,8 @@ func defaultHooksDir(provider string) string {
 		return ".claude"
 	case "opencode":
 		return ".opencode/plugin"
+	case "pi":
+		return ".pi/extensions"
 	default:
 		return ""
 	}
@@ -702,6 +706,8 @@ func defaultHooksFile(provider string) string {
 		return "settings.json"
 	case "opencode":
 		return "gastown.js"
+	case "pi":
+		return "gastown.ts"
 	default:
 		return ""
 	}
@@ -751,6 +757,9 @@ func defaultInstructionsFile(provider string) string {
 		return "AGENTS.md"
 	}
 	if provider == "opencode" {
+		return "AGENTS.md"
+	}
+	if provider == "pi" {
 		return "AGENTS.md"
 	}
 	return "CLAUDE.md"
