@@ -17,7 +17,7 @@ func isClaudeCmd(cmd string) bool {
 func TestBuiltinPresets(t *testing.T) {
 	t.Parallel()
 	// Ensure all built-in presets are accessible
-	presets := []AgentPreset{AgentClaude, AgentGemini, AgentCodex, AgentCursor, AgentAuggie, AgentAmp}
+	presets := []AgentPreset{AgentClaude, AgentGemini, AgentCodex, AgentCursor, AgentAuggie, AgentAmp, AgentPi}
 
 	for _, preset := range presets {
 		info := GetAgentPreset(preset)
@@ -52,6 +52,7 @@ func TestGetAgentPresetByName(t *testing.T) {
 		{"amp", AgentAmp, false},
 		{"aider", "", true},               // Not built-in, can be added via config
 		{"opencode", AgentOpenCode, false}, // Built-in multi-model CLI agent
+		{"pi", AgentPi, false},            // pi CLI agent
 		{"unknown", "", true},
 	}
 
@@ -83,6 +84,7 @@ func TestRuntimeConfigFromPreset(t *testing.T) {
 		{AgentCursor, "cursor-agent"},
 		{AgentAuggie, "auggie"},
 		{AgentAmp, "amp"},
+		{AgentPi, "pi"},
 	}
 
 	for _, tt := range tests {
