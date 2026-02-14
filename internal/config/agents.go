@@ -29,6 +29,8 @@ const (
 	AgentAmp AgentPreset = "amp"
 	// AgentOpenCode is OpenCode multi-model CLI.
 	AgentOpenCode AgentPreset = "opencode"
+	// AgentPi is pi CLI.
+	AgentPi AgentPreset = "pi"
 )
 
 // AgentPresetInfo contains the configuration details for an agent preset.
@@ -201,6 +203,25 @@ var builtinPresets = map[AgentPreset]*AgentPresetInfo{
 		NonInteractive: &NonInteractiveConfig{
 			Subcommand: "run",
 			OutputFlag: "--format json",
+		},
+	},
+	AgentPi: {
+		Name:    AgentPi,
+		Command: "pi",
+		Args:    []string{"--print"}, // Non-interactive mode
+		Env: map[string]string{
+			"PI_NO_TOOLS": "false", // Enable tools for autonomous work
+		},
+		ProcessNames:        []string{"pi"}, // pi runs as Bun process
+		SessionIDEnv:        "",                    // pi uses session files
+		ResumeFlag:          "--continue",
+		ResumeStyle:        "flag",
+		SupportsHooks:       false,
+		SupportsForkSession: false,
+		NonInteractive: &NonInteractiveConfig{
+			Subcommand: "", // pi uses --print flag
+			PromptFlag: "",
+			OutputFlag: "--mode json",
 		},
 	},
 }
