@@ -149,3 +149,20 @@ This appears to be:
 1. **Verify pi's `--continue` flag** - Test that session resumption works
 2. **Check if pi sets session env vars** - If so, update `SessionIDEnv`
 3. **Consider adding "bun" to ProcessNames** - Since pi runs on Bun, detection may need `["pi", "bun"]`
+
+## Verification Results (2026-02-14)
+
+Ran `pi --help` and examined `~/.pi/agent/settings.json` to verify field values:
+
+| Field | Current Value | Verified? |
+|-------|---------------|-----------|
+| SessionIDEnv | `""` | ✅ Confirmed - pi uses session files in `~/.pi/agent/sessions/`, no env var |
+| ResumeFlag | `"--continue"` | ✅ Confirmed - also supports `--resume` for specific session |
+| ResumeStyle | `"flag"` | ✅ Confirmed - `--continue` is a flag |
+| SupportsHooks | `false` | ✅ Confirmed - no hooks system |
+| SupportsForkSession | `false` | ✅ Confirmed - no fork/seance feature |
+| NonInteractive.Subcommand | `""` | ✅ Confirmed - uses flags, not subcommands |
+| NonInteractive.PromptFlag | `""` | ✅ Confirmed - uses positional arguments |
+| NonInteractive.OutputFlag | `"--mode json"` | ✅ Confirmed - `--mode json` flag exists |
+
+**Conclusion:** All preset field values are correct. No changes needed.
