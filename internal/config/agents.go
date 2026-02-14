@@ -213,7 +213,7 @@ var builtinPresets = map[AgentPreset]*AgentPresetInfo{
 		SessionIDEnv:        "",
 		ResumeFlag:          "--session",
 		ResumeStyle:         "flag",
-		SupportsHooks:       false,
+		SupportsHooks:       true, // Uses .pi/extensions/gastown.ts
 		SupportsForkSession: false,
 		NonInteractive: &NonInteractiveConfig{
 			PromptFlag: "--print",
